@@ -1,0 +1,76 @@
+{% extends 'admin/master.html' %}
+{% block head %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+{% endblock %}
+{% block body %}
+  <div class='container-fluid'>
+    <div class='row'>
+        <div id="myDiv" style="height:850px"></div>
+        <script>
+          var trace1 = {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Creation Count',
+            yaxis: 'y1',
+            line: {
+	          color: '#d62728',
+              width: 2,
+            },
+            x: [{% for item in create_date %}  
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in create_count %}  
+                  "{{item}}",
+                {% endfor %}],
+          };
+
+          var trace2 = {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Total Coins',
+            yaxis: 'y2',
+	        line: {
+              color: '#2ca02c',
+              width: 1,
+            },
+            x: [{% for item in create_date %}  
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in total_active %}  
+                  "{{item}}",
+                {% endfor %}],
+          };
+
+          var data = [trace1, trace2];
+
+          var layout = {
+            title: 'Creation of Casascius Coins Over Time',
+            xaxis: {
+              type: 'date',
+            },
+            yaxis: { 
+              title: 'Creation Count',
+              titlefont: {color: '#d62728'},
+              tickfont: {color: '#d62728'},
+              anchor: 'free',
+              range: [0, 3000],
+              rangemode: 'tozero',
+            },
+            yaxis2: {
+              title: 'Total Coins',
+              titlefont: {color: '#2ca02c'},
+              tickfont: {color: '#2ca02c'},
+              anchor: 'x',
+              range: [0, 30000],
+              overlaying: 'y',
+              side: 'right'
+            },
+          };
+
+          Plotly.newPlot('myDiv', data, layout);
+        </script>
+    </div>
+  </div>
+{% endblock %}
+

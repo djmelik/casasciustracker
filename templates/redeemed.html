@@ -1,0 +1,103 @@
+{% extends 'admin/master.html' %}
+{% block head %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+{% endblock %}
+{% block body %}
+  <div class='container-fluid'>
+    <div class='row'>
+        <div id="myDiv" style="height:850px"></div>
+        <script>
+          var trace1 = {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Redeemed Count',
+            line: {
+              color: '#d62728',
+              width: 2,
+            },
+ 	        x: [{% for item in redeem_date %}  
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in redeem_count %}  
+                  "{{item}}",
+                {% endfor %}],
+          };
+
+          var trace2 = {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Active Coins',
+            yaxis: 'y2',
+            line: {
+              color: '#2ca02c',
+              width: 1,
+            },
+ 	        x: [{% for item in redeem_date %}  
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in total_redeem %}  
+                  "{{item}}",
+                {% endfor %}],
+          };
+          
+          var trace3 = {
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Redeemed Coins',
+            yaxis: 'y3',
+            line: {
+              color: '#ff7f0e',
+              width: 1,
+            },
+ 	        x: [{% for item in redeem_date %}  
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in total_active %}  
+                  "{{item}}",
+                {% endfor %}],
+          };
+
+          var data = [trace1, trace2, trace3];
+
+          var layout = {
+			separatethousands: false,
+            title: 'Redeemed Casascius Coins Over Time',
+            xaxis: {
+              type: 'date',
+              domain: [0, 0.9],
+            },
+            yaxis: { 
+              title: 'Redeemed Count',
+              titlefont: {color: '#d62728'},
+              tickfont: {color: '#d62728'},
+              anchor: 'free',
+              rangemode: 'tozero',
+            },
+            yaxis2: {
+              title: 'Active Coins',
+              titlefont: {color: '#2ca02c'},
+              tickfont: {color: '#2ca02c'},
+              anchor: 'x',
+              range: [0, 30000],
+              overlaying: 'y',
+              side: 'right',
+            },
+            yaxis3: {
+              title: 'Redeemed Coins',
+              titlefont: {color: '#ff7f0e'},
+              tickfont: {color: '#ff7f0e'},
+              anchor: 'free',
+              range: [0, 30000],
+              overlaying: 'y',
+              side: 'right',
+              position: 0.95,
+            },
+          };
+
+          Plotly.newPlot('myDiv', data, layout);
+        </script>
+    </div>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,80 @@
+{% extends 'admin/master.html' %}
+{% block head %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+{% endblock %}
+{% block body %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class="col-sm-4">
+        <table class="table table-bordered table-striped table-hovert">
+          <tr>
+            <th>Series</th>
+            <th>Total</th>
+            <th>Active</th>
+            <th>Redeemed</th>
+            <th>% Redeemed</th>
+          </tr>
+          {% for index in range(0, (labels | length)) %}
+          {% set total = redeem_values[index] + active_values[index] %}
+          {% set percentage = redeem_values[index] / total * 100 %}
+          <tr>
+            <td>{{ labels[index] }}</td>
+            <td>{{ total }}</td>
+            <td>{{ active_values[index] }}</td>
+            <td>{{ redeem_values[index] }}</td>
+            <td>{{ '%0.2f' % percentage }}%</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="col-sm-8">
+        <div id="myDiv" style="height:800px"></div>
+        <script>
+          var trace1 = {
+            x: [{% for item in labels %}
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in active_values %}
+                  {{item}},
+                {% endfor %}],
+            marker: {color: 'rgb(55, 83, 109)'},
+            name: 'Active',
+            type: 'bar',
+          };
+          var trace2 = {
+            x: [{% for item in labels %}
+                  "{{item}}",
+                {% endfor %}],
+            y: [{% for item in redeem_values %}
+                  {{item}},
+                {% endfor %}],
+            marker: {color: 'rgb(26, 118, 255)'},
+            name: 'Redeemed',
+            type: 'bar',
+          };
+          var data = [trace1, trace2];
+          var layout = {
+            title: 'Casascius Coin Status (series)',
+            barmode: 'stack',
+              margin: {
+                b:200,
+                l:100,
+              },
+              xaxis: {
+                tickangle: -45,
+                automargin: true,
+              },
+              yaxis: {
+                title: 'Redeemed Coins',
+              },
+            };
+  
+            Plotly.newPlot('myDiv', data, layout);
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
